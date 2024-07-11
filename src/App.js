@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import UserSearch from './components/UserSearch';
+import UserProfile from './components/UserProfile';
+import RepoList from './components/RepoList';
+import FollowerList from './components/FollowerList';
 
-function App() {
+const App = () => {
+  const [user, setUser] = useState(null);
+  const [selectedFollower, setSelectedFollower] = useState(null);
+
+  const handleSearch = (userData) => {
+    setUser(userData);
+    setSelectedFollower(null); // Reset selected follower on new search
+  };
+
+  const handleSelectFollower = (followerUsername) => {
+    setSelectedFollower(followerUsername);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <UserSearch onSearch={handleSearch} />
+      {user && !selectedFollower && (
+        <div>
+          <UserProfile user={user} />
+          <RepoList username={user.username} />
+          <FollowerList username={user.username} onSelectFollower={handleSelectFollower} />
+        </div>
+      )}
+      {selectedFollower && (
+        <div>
+          <UserSearch onSearch={handleSearch} />
+          <RepoList username={selectedFollower} />
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;
+
